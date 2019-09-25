@@ -24,7 +24,7 @@ public protocol SilentScrollable: class {
 
 public extension SilentScrollable where Self: UIViewController {
 
-    public func statusBarStyle(showStyle: UIStatusBarStyle, hideStyle: UIStatusBarStyle) -> UIStatusBarStyle {
+    func statusBarStyle(showStyle: UIStatusBarStyle, hideStyle: UIStatusBarStyle) -> UIStatusBarStyle {
         guard let preferredStatusBarStyle = silentScrolly?.preferredStatusBarStyle else {
             /// To consider whether statusBarStyle and configureSilentScrolly precede.
             if silentScrolly == nil {
@@ -54,7 +54,7 @@ public extension SilentScrollable where Self: UIViewController {
         setNeedsStatusBarAppearanceUpdate()
     }
 
-    public func configureSilentScrolly(_ scrollView: UIScrollView, followBottomView: UIView?, completion: (() -> Void)? = nil) {
+    func configureSilentScrolly(_ scrollView: UIScrollView, followBottomView: UIView?, completion: (() -> Void)? = nil) {
         guard let navigationBarHeight = navigationController?.navigationBar.bounds.height,
             let safeAreaInsetsBottom = UIApplication.shared.keyWindow?.safeAreaInsets.bottom else {
             return
@@ -91,10 +91,10 @@ public extension SilentScrollable where Self: UIViewController {
 
         if let isAddObserver = silentScrolly?.isAddObserver {
             if isAddObserver {
-                NotificationCenter.default.addObserver(forName: .UIDeviceOrientationDidChange, object: nil, queue: nil) { [weak self] in
+                NotificationCenter.default.addObserver(forName: UIDevice.orientationDidChangeNotification, object: nil, queue: nil) { [weak self] in
                     self?.orientationDidChange($0)
                 }
-                NotificationCenter.default.addObserver(forName: .UIApplicationDidEnterBackground, object: nil, queue: nil) { [weak self] in
+                NotificationCenter.default.addObserver(forName: UIApplication.didEnterBackgroundNotification, object: nil, queue: nil) { [weak self] in
                     self?.didEnterBackground($0)
                 }
             }
@@ -123,30 +123,30 @@ public extension SilentScrollable where Self: UIViewController {
         adjustEitherView(scrollView, isShow: true, animated: false)
     }
 
-    public func showNavigationBar() {
+    func showNavigationBar() {
         guard let scrollView = silentScrolly?.scrollView else {
             return
         }
         adjustEitherView(scrollView, isShow: true)
     }
 
-    public func hideNavigationBar() {
+    func hideNavigationBar() {
         guard let scrollView = silentScrolly?.scrollView else {
             return
         }
         adjustEitherView(scrollView, isShow: false)
     }
 
-    public func silentWillDisappear() {
+    func silentWillDisappear() {
         showNavigationBar()
         silentScrolly?.isTransitionCompleted = false
     }
 
-    public func silentDidDisappear() {
+    func silentDidDisappear() {
         silentScrolly?.isTransitionCompleted = true
     }
 
-    public func silentDidLayoutSubviews() {
+    func silentDidLayoutSubviews() {
         guard let scrollView = silentScrolly?.scrollView else {
             return
         }
@@ -160,14 +160,14 @@ public extension SilentScrollable where Self: UIViewController {
         }
     }
 
-    public func silentWillTranstion() {
+    func silentWillTranstion() {
         guard let scrollView = silentScrolly?.scrollView else {
             return
         }
         adjustEitherView(scrollView, isShow: true, animated: false)
     }
 
-    public func silentDidScroll() {
+    func silentDidScroll() {
         guard let scrollView = silentScrolly?.scrollView,
             let prevPositiveContentOffsetY = silentScrolly?.prevPositiveContentOffsetY else {
                 return
@@ -196,7 +196,7 @@ public extension SilentScrollable where Self: UIViewController {
         silentScrolly?.prevPositiveContentOffsetY = positiveContentOffsetY
     }
 
-    public func silentDidZoom() {
+    func silentDidZoom() {
         guard let scrollView = silentScrolly?.scrollView else {
             return
         }
